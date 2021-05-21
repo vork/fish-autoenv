@@ -7,13 +7,14 @@ function _autoenv_exec
     return
   end
 
-  if which shasum > /dev/null ^ /dev/null
+  which shasum &> /dev/null
+  if test $status -eq 0
     set hash (shasum $argv | cut -d' ' -f 1)
   else
     set hash (sha1sum $argv | cut -d' ' -f 1)
   end
 
-  if grep "$argv:$hash" "$AUTOENV_AUTH_FILE"  > /dev/null ^ /dev/null
+  if grep --quiet "$argv:$hash" "$AUTOENV_AUTH_FILE"
     . $argv
   else
     echo "> WARNING"
